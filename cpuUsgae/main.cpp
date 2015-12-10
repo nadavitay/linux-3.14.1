@@ -1,6 +1,7 @@
-include "cpu_usage_analyzer.h"
+#include "cpu_usage_analyzer.h"
 
-int main (int argc, char *argv[])
+int main ()
 {
-	cpu_usage_analyzer cpu_usage_analyzer_obj();
+	cpu_usage_analyzer cpu;
+	cpu.run();
 }
