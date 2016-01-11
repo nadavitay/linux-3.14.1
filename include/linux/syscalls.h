@@ -856,5 +856,5 @@ asmlinkage long sys_kcmp(pid_t pid1, pid_t pid2, int type,
 			 unsigned long idx1, unsigned long idx2);
 asmlinkage long sys_finit_module(int fd, const char __user *uargs, int flags);
 asmlinkage long sys_get_rq_num_running(int cpu_num);
-asmlinkage long sys_ get_task_info(pid_t task_pid);
+asmlinkage long sys_get_task_info(pid_t task_pid);
 #endif
