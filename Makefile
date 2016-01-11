@@ -779,7 +779,7 @@ export mod_sign_cmd
 
 
 ifeq ($(KBUILD_EXTMOD),)
-core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/ get_rq_num_running/
+core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/ get_rq_num_running/ get_task_info/
 
 vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
