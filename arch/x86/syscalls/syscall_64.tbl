@@ -324,6 +324,10 @@
 315	common	sched_getattr		sys_sched_getattr
 316 	64	get_rq_num_running	sys_get_rq_num_running
 317	64	get_task_info		sys_get_task_info
+318	64	get_task_cpu_allowed	sys_get_task_cpu_allowed
+319	64	get_tasks_from_rq	sys_get_tasks_from_rq
+320	64	get_cfs_queue_weight	sys_get_cfs_queue_weight
+	
 
 #
 # x32-specific system call numbers start at 512 to avoid cache impact

@@ -1,0 +1,9 @@
+#!/bin/bash
+#create processes
+echo "Creating Processes.."
+for ((i=0;i<15;i++)); do
+    for ((j=0;j<8;j++)); do
+        ./run_task_with_affinity $j >> /dev/null &
+    done
+done
+

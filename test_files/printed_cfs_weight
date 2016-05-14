@@ -1,0 +1,39 @@
+Creating Processes..
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 1
+126 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 2
+130 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 3
+127 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 4
+126 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 5
+126 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 6
+135 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 7
+126 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ ./print_cfs_rq_weight 8
+54036056365207296 
+user@nssl-prj-k1:~/linux-3.14.1/test_files$ sudo su
+[sudo] password for user: 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# cpuoff 3
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 7
+200 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 7
+201 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 7
+201 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 1
+118 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 2
+118 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 3
+0 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 4
+118 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 5
+119 
+root@nssl-prj-k1:/home/user/linux-3.14.1/test_files# ./print_cfs_rq_weight 6
+111 
+

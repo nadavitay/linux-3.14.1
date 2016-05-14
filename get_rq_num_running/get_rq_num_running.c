@@ -1,5 +1,5 @@
 #include <linux/kernel.h>
-#include "/home/nadav/linux-3.14.1/kernel/sched/sched.h"
+#include "/home/user/linux-3.14.1/kernel/sched/sched.h"
 
  asmlinkage long sys_get_rq_num_running(int cpu_num)
 {		

@@ -20,6 +20,8 @@
  *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra <pzijlstr@redhat.com>
  */
 
+//#define NADAV_DEBUG
+//#define PRINTK_GRP_IMB
 #include <linux/latencytop.h>
 #include <linux/sched.h>
 #include <linux/cpumask.h>
@@ -4741,6 +4743,14 @@ struct lb_env {
  */
 static void move_task(struct task_struct *p, struct lb_env *env)
 {
+	#ifdef NADAV_DEBUG	
+	/////////// nadav debug ////////////////////////////////
+	printk("Inside move task\n");
+	printk("task with pid %d  moved from cpu num %d to cpu number %d\n",p->pid,env->src_rq->cpu,env->dst_rq->cpu);
+	printk("src rq load_weight is %d and dst rq load_weight is %d\n",env->src_rq->load.weight,env->dst_rq->load.weight);
+	///////////    nadav debug ////////////////////////
+	#endif
+	
 	deactivate_task(env->src_rq, p, 0);
 	set_task_cpu(p, env->dst_cpu);
 	activate_task(env->dst_rq, p, 0);
@@ -5538,6 +5548,11 @@ static inline void update_sg_lb_stats(struct lb_env *env,
 	sgs->group_weight = group->group_weight;
 
 	sgs->group_imb = sg_imbalanced(group);
+	// nadav debug ////////////////////////////
+	#ifdef PRINTK_GRP_IMB
+	printk("grp_imb  :   %d,\n",sgs->group_imb);
+	#endif
+	// nadav debug ////////////////////////////
 	sgs->group_capacity = sg_capacity(env, group);
 
 	if (sgs->group_capacity > sgs->sum_nr_running)
@@ -5968,6 +5983,18 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
 force_balance:
 	/* Looks like there is an imbalance. Compute it */
 	calculate_imbalance(env, &sds);
+	#ifdef NADAV_DEBUG	
+	////nadav debug //////////////////////////////////////////////////
+	char str_[256];
+	cpulist_scnprintf(str_, sizeof(str_), sched_group_cpus(sds.busiest));
+	printk("found imbalanced group - which contain the following cpus :\n");
+
+	printk("%s\n",str_);
+	printk("and the imbalance is %d\n",env->imbalance);
+	////// nadav debugggggggggggggggg////////////////////////////////
+	#endif
+
+
 	return sds.busiest;
 
 out_balanced:
@@ -6653,9 +6680,27 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
 	u64 max_cost = 0;
 
 	update_blocked_averages(cpu);
-
+	#ifdef NADAV_DEUBG
+	/////debug nadaaaaaavvv//////
+	int i=-1;
+	/// debug nadav ///////////
+	#endif
 	rcu_read_lock();
 	for_each_domain(cpu, sd) {
+	#ifdef NADAV_DEUBG
+	//////////////////////////// nadav debug //////////////////////////////////
+	i++;
+	char str_[256];
+
+	cpulist_scnprintf(str_, sizeof(str_), sched_domain_span(sd));
+
+	printk("inside REBALANCE DOMAIN\n");
+	printk("this is cpu number %d\n",cpu);
+	printk("we are at domain number %d\n",i);
+	printk("cpu belong to this domain are\n");	
+	printk("%s\n",str_);
+	/////////////////////////// nadav debug ///////////////////////////////////
+	#endif
 		/*
 		 * Decay the newidle max times here because this is a regular
 		 * visit to all the domains. Decay ~1% per second.

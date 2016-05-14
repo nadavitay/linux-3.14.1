@@ -2,7 +2,7 @@
 #include <linux/kernel.h>
 #include <sys/syscall.h>
 #include <unistd.h>
-int main(i){
+int main(){
 
 long int cpu0 = syscall(316,0);
 long int cpu1 = syscall(316,1);
