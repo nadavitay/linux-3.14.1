@@ -1,7 +1,7 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 
-#include "/home/user/linux-3.14.1/kernel/sched/sched.h"
+#include "../kernel/sched/sched.h"
 #include <linux/slab.h>
 #include <asm/uaccess.h>
 

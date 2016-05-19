@@ -21,7 +21,9 @@
  */
 
 //#define NADAV_DEBUG
+//#define DEBUG_ITAY
 //#define PRINTK_GRP_IMB
+
 #include <linux/latencytop.h>
 #include <linux/sched.h>
 #include <linux/cpumask.h>
@@ -4746,8 +4748,8 @@ static void move_task(struct task_struct *p, struct lb_env *env)
 	#ifdef NADAV_DEBUG	
 	/////////// nadav debug ////////////////////////////////
 	printk("Inside move task\n");
-	printk("task with pid %d  moved from cpu num %d to cpu number %d\n",p->pid,env->src_rq->cpu,env->dst_rq->cpu);
-	printk("src rq load_weight is %d and dst rq load_weight is %d\n",env->src_rq->load.weight,env->dst_rq->load.weight);
+	printk("task with pid (%d)  moved from cpu (%d) to cpu (%d)\n", p->pid, 					env->src_rq->cpu,		env->dst_rq->cpu);
+	printk("src_rq->load_weight = %d, dst_rq->load_weight = %d\n",  env->src_rq->load.weight,	env->dst_rq->load.weight);
 	///////////    nadav debug ////////////////////////
 	#endif
 	
@@ -5471,6 +5473,9 @@ fix_small_capacity(struct sched_domain *sd, struct sched_group *group)
 
 static inline int sg_imbalanced(struct sched_group *group)
 {
+	#ifdef DEBUG_ITAY
+	printk("DEBUG_ITAY: %s, %d, group->sgp->imbalance = %d", __FUNCTION__, __LINE__, group->sgp->imbalance);
+	#endif
 	return group->sgp->imbalance;
 }
 
@@ -5991,7 +5996,6 @@ force_balance:
 
 	printk("%s\n",str_);
 	printk("and the imbalance is %d\n",env->imbalance);
-	////// nadav debugggggggggggggggg////////////////////////////////
 	#endif
 
 

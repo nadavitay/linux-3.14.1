@@ -1,6 +1,6 @@
 #!/bin/bash
 #create processes
-echo "Creating Processes.."
+echo "Usage: disregard_cpu <cpu num to disregard from> <num of tasks to create>"
 for ((i=0;i<$2;i++)); do
     ./not_run_task_with_affinity $1 >> /dev/null &
 done
