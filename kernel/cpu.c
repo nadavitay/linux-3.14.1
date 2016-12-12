@@ -291,14 +291,9 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen)
 		.mod = mod,
 		.hcpu = hcpu,
 	};
-/*BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB*/
-	cpumask_t online_without_cpu, cpus_and_mask;
-	char debug_buff[256];
 
-//	struct rq* my_rq;
-//  struct task_struct *p, *n;
+	cpumask_t online_without_cpu, cpus_and_mask;
 	struct task_struct *p, *g;
-/*EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE*/
 
 	if (num_online_cpus() == 1)
 		return -EBUSY;
@@ -306,39 +301,17 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen)
 	if (!cpu_online(cpu))
 		return -EINVAL;
 
-/*BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB*/
 	online_without_cpu = *(cpu_online_mask);
 	cpu_clear(cpu, online_without_cpu);
-    cpumask_scnprintf(debug_buff, 256, &online_without_cpu);
-    printk(KERN_DEBUG "DEBUG::%s::   %s", __PRETTY_FUNCTION__, debug_buff);
-
-//    my_rq = cpu_rq(cpu);
-
-//    raw_spin_lock_irq(&my_rq->lock);
-//    list_for_each_entry_safe(p, n, &my_rq->cfs_tasks, se.group_node){
-//    	cpus_and(cpus_and_mask, online_without_cpu, p->cpus_allowed);
-//    	if(cpus_empty(cpus_and_mask))
-//    	{
-//    	    cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed);
-//    		printk(KERN_DEBUG "DEBUG::%s::   found risky pid(=%d),  cpu_allowed = %s\n", __PRETTY_FUNCTION__, debug_buff, task_pid_nr(p));
-//    		p->cpus_allowed_recovery = p->cpus_allowed;
-//    	}
-//    }
-//    raw_spin_unlock_irq(&my_rq->lock);
-
-
 
 	do_each_thread(g, p)
     {
     	cpus_and(cpus_and_mask, online_without_cpu, p->cpus_allowed);
     	if(cpus_empty(cpus_and_mask))
     	{
-    	    cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed);
-    		printk(KERN_DEBUG "DEBUG::%s::   found risky pid(=%d),  cpu_allowed = %s\n", __PRETTY_FUNCTION__, task_pid_nr(p), debug_buff);
     		p->cpus_allowed_recovery = p->cpus_allowed;
     	}
     } while_each_thread(g, p);
-/*EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE*/
 
     cpu_hotplug_begin();
 
@@ -434,77 +407,22 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen)
 	unsigned long mod = tasks_frozen ? CPU_TASKS_FROZEN : 0;
 	struct task_struct *idle;
 
-
-
-/*BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB*/
     struct task_struct *p, *g;
 	cpumask_t cpu_up_mask, cpus_and_mask;
-	char debug_buff[256];
 
 	cpus_clear(cpu_up_mask);
 	cpu_set(cpu, cpu_up_mask);
-
-
 
 	do_each_thread(g, p)
     {
 		cpus_and(cpus_and_mask, cpu_up_mask, p->cpus_allowed_recovery);
 
-		cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed_recovery);
-		printk(KERN_DEBUG "DEBUG::%s::   cpus_allowed_recovery of pid %d is: %s", __PRETTY_FUNCTION__, task_pid_nr(p), debug_buff);
-
 		if(!cpus_empty(cpus_and_mask))
 		{
-			printk(KERN_DEBUG "DEBUG::%s::   found pid to recover(=%d)\n", __PRETTY_FUNCTION__, task_pid_nr(p));
 			p->cpus_allowed = p->cpus_allowed_recovery;
 			p->cpus_allowed_recovery = CPU_MASK_NONE;
-			cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed);
-			printk(KERN_DEBUG "DEBUG::%s::   recovered cpus_allowed to: %s", __PRETTY_FUNCTION__, debug_buff);
 		}
     } while_each_thread(g, p);
-/****************************************************************/
-//	unsigned int cpu_itr;
-//	struct rq* my_rq;
-//    struct task_struct *p, *n;
-//    cpumask_t cpu_itr_mask, cpus_and_mask;
-//    char debug_buff[256];
-///****************************************************************/
-//
-//
-//
-//    for_each_cpu_mask(cpu_itr, *(cpu_online_mask))
-//	{
-//	    my_rq = cpu_rq(cpu_itr);
-//	    raw_spin_lock_irq(&my_rq->lock);
-//	}
-//
-//	for_each_cpu_mask(cpu_itr, *(cpu_online_mask))
-//	{
-//	    my_rq = cpu_rq(cpu_itr);
-//	    cpus_clear(cpu_itr_mask);
-//	    cpu_set(cpu_itr, cpu_itr_mask);
-//
-//	    list_for_each_entry_safe(p, n, &my_rq->cfs_tasks, se.group_node){
-//	    	cpus_and(cpus_and_mask, cpu_itr_mask, p->cpus_allowed_recovery);
-//    	    cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed);
-//    	    printk(KERN_DEBUG "DEBUG::%s::   cpus_allowed_recovery of pid %d is: %s", __PRETTY_FUNCTION__, task_pid_nr(p), debug_buff);
-//	    	if(!cpus_empty(cpus_and_mask))
-//	    	{
-//	    		printk(KERN_DEBUG "DEBUG::%s::   found pid to recover(=%d)\n", __PRETTY_FUNCTION__, task_pid_nr(p));
-//	    		p->cpus_allowed = p->cpus_allowed_recovery;
-//	    		p->cpus_allowed_recovery = CPU_MASK_NONE;
-//	    	    cpumask_scnprintf(debug_buff, 256, &p->cpus_allowed);
-//	    	    printk(KERN_DEBUG "DEBUG::%s::   recovered cpus_allowed to: %s", __PRETTY_FUNCTION__, debug_buff);
-//	    	}
-//	    }
-//	}
-//
-//	for_each_cpu_mask(cpu_itr, *(cpu_online_mask))
-//	{
-//	    my_rq = cpu_rq(cpu_itr);
-//	    raw_spin_unlock_irq(&my_rq->lock);
-//	}
-/*EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE*/
 
 	cpu_hotplug_begin();
 
